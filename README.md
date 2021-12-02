@@ -1,6 +1,6 @@
 # off-chain-validation-poc
 
-This repo serves as a test bed to try out some ideas I have around practical applications of web3 technologies. I'm working under the assumption that doing anything on-chain is expensive and slow. Until this changes, I'm operating under the asusmption that any web3 project should aim to keep as much of their application logic off-chain, similar to how web2 currently operates. Think graphql, REST endpoints, traditional RDBMS and the like. Limiting smart contracts and on-chain storage is essential to a successful, scalable project.
+This repo serves as a test bed to try out some ideas I have around practical applications of web3 technologies. I'm working under the assumption that doing anything on-chain is expensive and slow. Until this changes, I'm operating under the assumption that any web3 project should aim to keep as much of their application logic off-chain, similar to how web2 currently operates. Think graphql, REST endpoints, traditional RDBMS and the like. Limiting smart contracts and on-chain storage is essential to a successful, scalable project.
 
 ## An Analogy
 
@@ -18,3 +18,26 @@ This is a smart contract that a professor can call at any time, with any grade f
 - Solidity Development - Truffle
 - Backend business logic - Cloudflare workers
 - web3 frontend - SvelteKit
+
+## Running locally
+
+To run this on your local machine, we'll be booting up a local ethereum-based blockchain using Ganache. If you're unfamiliar with how Ganache + Truffle work, head over to their site to get a crash course. Modify your `truffle-config.js` file as needed. Now, take a deep breath and follow along with the following instructions.
+
+```sh
+# install global dependencies
+npm install wrangler@beta -g
+npm install truffle -g
+
+# authenticate wrangler with cloudflare
+wrangler@beta login
+```
+
+Our frontend is built with svelte + sveltekit. Nothing special about using svelte over any other framework for the purposes of this article, this is mainly out of convenience (and my undying love for Svelte). All the frontend code and related cloudflare functions will be contained in the `client` directory, including our smart contract build artifacts.
+
+```sh
+cd client
+yarn install
+# start up a local development server
+yarn dev
+```
+
