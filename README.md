@@ -19,6 +19,10 @@ This is a smart contract that a professor can call at any time, with any grade f
 - Backend business logic - Cloudflare workers
 - web3 frontend - SvelteKit
 
+## Next steps
+
+Check out [GH Project](https://github.com/lucasnad27/off-chain-validation-poc/projects/1) for the Kanban board. As mentioned earlier, I'm winging this and am not entirely sure what the end-product will look, hence a little Kanban sanity never hurts.
+
 ## Running locally
 
 To run this on your local machine, we'll be booting up a local ethereum-based blockchain using Ganache. If you're unfamiliar with how Ganache + Truffle work, head over to their site to get a crash course. Modify your `truffle-config.js` file as needed. Now, take a deep breath and follow along with the following instructions.
@@ -37,7 +41,48 @@ Our frontend is built with svelte + sveltekit. Nothing special about using svelt
 ```sh
 cd client
 yarn install
-# start up a local development server
-yarn dev
+# start up a local cloudflare pages development server
+# cat contents of a private key into the $PRIVATE_KEY environment variable
+wrangler pages dev -b PRIVATE_KEY=$PRIVATE_KEY -- yarn dev
 ```
 
+## Deploying cloudflare functions only
+
+I'm very excited for the possibilities with cloudflare. This [blog post](https://blog.cloudflare.com/wrangler-v2-beta/) announces the new version of wrangler, v2.0, currently in  beta. Docs are still on github, found [here](https://github.com/cloudflare/wrangler2). I'm  still learning the optimal path for development and deploying functions. For now, here's some chicken scratch that I intend to clean up at a later point in time...
+
+```sh
+# deploy to dev sandbox (will deploy to cloudflare network, only for you to see)
+cd client
+wrangler dev functions/index.js
+# publish function
+wrangler publish functions/index.js --name poc-test
+```
+
+## Handy links
+
+Using cloudflare functions - https://developers.cloudflare.com/pages/platform/functions
+js-jose library - https://github.com/square/js-jose
+JWS for 5 year olds - https://medium.com/swlh/json-web-signature-jws-and-jws-detached-for-a-five-year-old-88729b7b1a68
+js encryption not for dummies - https://medium.facilelogin.com/jwt-jws-and-jwe-for-not-so-dummies-b63310d201a3
+gui for encode/decode - https://jwt.io
+jwt js lib - https://github.com/panva/jose
+
+
+## Notes on encryption
+
+I'm by no means an encryption expert. Please consult your local cryptographer before throwing this into production.
+
+Cloudlfare functions need to sign JWT messages with a private key. For now, I'm using the built-in utilities included with panva/jose library. One could argue printing out private keys isn't great. Ideally generate these with your cloud provider.
+
+```javascript
+  const algorithm = 'ES256';
+  const { publicKey, privateKey } = await jose.generateKeyPair('ES256', { extractable: true})
+  const wrappedKey = await jose.exportPKCS8(privateKey)
+  const exportedPublicKey = await jose.exportSPKI(publicKey)
+  console.log(exportedPublicKey); // prints your public key
+  console.log(wrappedKey); // prints your private key
+```
+
+The primary purpose of signing this message is to allow any 3rd party to view the payload (un-encrypted payload) and verify it was signed by a trusted key. If your payload requires encryption (PII, finances, diary entry, etc.,) I'd recommend signing it with multiple public keys: smart contract, the web user, and the originator. If this data is used on the smart contract at all, they should be able to see what they are submitting.
+
+For the purpose of this demo, we will be using Cloudflare environment variables. At the time of this writing, Cloudflare's "Secrets" solution has not been released. When it does, the private key wrap will then be encrypted.

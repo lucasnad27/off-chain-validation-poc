@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+/* global styles */
+@layer base {
+    a {
+      @apply text-yellow-400;
+    }
+    a:visited {
+        @apply text-blue-900;
+    }
+}
