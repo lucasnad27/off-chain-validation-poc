@@ -86,3 +86,7 @@ Cloudlfare functions need to sign JWT messages with a private key. For now, I'm 
 The primary purpose of signing this message is to allow any 3rd party to view the payload (un-encrypted payload) and verify it was signed by a trusted key. If your payload requires encryption (PII, finances, diary entry, etc.,) I'd recommend signing it with multiple public keys: smart contract, the web user, and the originator. If this data is used on the smart contract at all, they should be able to see what they are submitting.
 
 For the purpose of this demo, we will be using Cloudflare environment variables. At the time of this writing, Cloudflare's "Secrets" solution has not been released. When it does, the private key wrap will then be encrypted.
+
+## Dev cycle for smart contracts
+
+Most of the scaffolding for smart contracts is handled by [Truffle](http://trufflesuite.com/docs/truffle/overview). 
