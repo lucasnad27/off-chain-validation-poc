@@ -11,8 +11,8 @@ contract YourVerifiedName {
         "-----BEGIN PUBLIC KEY-----\n"
         "MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEBQ+KHYy6pX/wkl56uCyLWBTAniSA\n"
         "nYKZYV4ad18v+wFft8ZDTSgZ6kUZKXQqaKRpLfHXkd8ZEwUa0orQW4DFaQ==\n"
-        "-----END PUBLIC KEY-----\n"
-    };
+        "-----END PUBLIC KEY-----\n";
+    }
 
     function updateName(string jwt) public returns(bool success) {
         string name = getNameFromJWT(jwt);
