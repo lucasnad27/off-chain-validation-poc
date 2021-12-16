@@ -6,7 +6,7 @@ export const jsonResponse = (value: any, init: ResponseInit = {}) =>
     ...init,
   });
 
-export const encryptedJsonResponse = async (value: any, pkcs8: string, init: ResponseInit = {}) => {
+export const signedJsonResponse = async (value: any, pkcs8: string, init: ResponseInit = {}) => {
   const algorithm = 'ES256';
   const privateKey = await jose.importPKCS8(pkcs8, algorithm);
   const jwt = await new jose.SignJWT({ value })
